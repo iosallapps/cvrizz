@@ -1,0 +1,107 @@
+// Prisma Schema for CV Builder
+// Database: PostgreSQL via Supabase
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// USER MODEL
+// ============================================
+model User {
+  id    String  @id @default(uuid())
+  email String  @unique
+  name  String?
+
+  // Subscription Management
+  subscriptionStatus   SubscriptionStatus @default(TRIAL)
+  trialEndsAt          DateTime           @default(dbgenerated("NOW() + INTERVAL '14 days'"))
+  stripeCustomerId     String?            @unique
+  stripeSubscriptionId String?
+  currentPeriodEnd     DateTime?
+
+  // AI Usage Tracking (resets monthly)
+  aiCreditsUsed    Int      @default(0)
+  aiCreditsResetAt DateTime @default(now())
+
+  // Relations
+  resumes Resume[]
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+enum SubscriptionStatus {
+  TRIAL         // 14 days free access
+  TRIAL_EXPIRED // Trial ended, payment required
+  ACTIVE        // Paying customer
+  PAST_DUE      // Payment failed, in grace period
+  CANCELLED     // Cancelled, access until period end
+}
+
+// ============================================
+// RESUME MODEL
+// ============================================
+model Resume {
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Resume Metadata
+  title       String @default("Untitled Resume")
+  templateId  String @default("classic")
+  accentColor String @default("#2563eb")
+
+  // Public Link Settings
+  isPublic    Boolean  @default(false)
+  publicSlug  String?  @unique
+
+  // Resume Content (stored as JSON for flexibility)
+  // Following JSON Resume standard: https://jsonresume.org/schema
+  basics    Json @default("{}")
+  work      Json @default("[]")
+  education Json @default("[]")
+  skills    Json @default("[]")
+  languages Json @default("[]")
+  projects  Json @default("[]")
+
+  // For PDF caching
+  pdfCacheKey String?
+
+  // One-time purchase tracking
+  isPurchased Boolean @default(false)
+  purchasedAt DateTime?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, updatedAt(sort: Desc)])
+  @@map("resumes")
+}
+
+// ============================================
+// CV PURCHASE MODEL (One-time payments)
+// ============================================
+model CvPurchase {
+  id                    String   @id @default(uuid())
+  resumeId              String
+  userId                String
+  stripePaymentIntentId String   @unique
+  amount                Int      // Amount in smallest currency unit (bani)
+  currency              String   @default("ron")
+  status                String   @default("pending") // pending, completed, failed
+  createdAt             DateTime @default(now())
+
+  @@index([userId])
+  @@index([resumeId])
+  @@map("cv_purchases")
+}
