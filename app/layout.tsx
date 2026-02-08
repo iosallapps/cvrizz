@@ -15,6 +15,22 @@ export const metadata: Metadata = {
   description:
     "Create professional, ATS-friendly resumes with AI assistance. Export to PDF in minutes.",
   keywords: ["resume", "cv", "builder", "job", "career", "ATS", "professional"],
+  metadataBase: new URL("https://www.cvrizz.com"),
+  openGraph: {
+    title: "CV Rizz - Create Professional Resumes",
+    description:
+      "Create professional, ATS-friendly resumes with AI assistance. Export to PDF in minutes.",
+    url: "https://www.cvrizz.com",
+    siteName: "CV Rizz",
+    locale: "ro_RO",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CV Rizz - Create Professional Resumes",
+    description:
+      "Create professional, ATS-friendly resumes with AI assistance.",
+  },
 };
 
 export default function RootLayout({

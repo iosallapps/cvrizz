@@ -1,8 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
+import { syncUserFromAuth } from "@/lib/user";
 import { NextResponse } from "next/server";
 
 // Whitelist of allowed redirect prefixes
-const ALLOWED_REDIRECT_PREFIXES = ["/dashboard", "/editor", "/settings", "/billing"];
+const ALLOWED_REDIRECT_PREFIXES = ["/dashboard", "/editor", "/settings", "/billing", "/reset-password"];
 
 /**
  * Validates that a redirect path is safe to use
@@ -48,6 +49,15 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
+      // Ensure user exists in Prisma database (creates on first login/signup)
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          await syncUserFromAuth(user);
+        }
+      } catch {
+        // Don't block redirect if sync fails — dashboard will retry
+      }
       return NextResponse.redirect(`${origin}${redirectTo}`);
     }
   }

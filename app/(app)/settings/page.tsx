@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Card,
@@ -15,10 +16,23 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { useTheme } from "@/lib/theme/ThemeContext";
 import { useUserStats, formatMemberSince } from "@/hooks/useUserStats";
+import { createClient } from "@/lib/supabase/client";
+import { updateProfile, deleteAccount } from "@/app/actions/settings";
+import { toast } from "sonner";
 import {
   User,
   Bell,
@@ -54,10 +68,77 @@ const sectionIcons = {
 };
 
 export default function SettingsPage() {
+  const router = useRouter();
   const { t, language, setLanguage } = useLanguage();
   const { theme, setTheme } = useTheme();
   const { stats: userStats, isLoading } = useUserStats();
   const [activeSection, setActiveSection] = useState<SettingsSection>("profile");
+
+  // Form state
+  const [profileName, setProfileName] = useState("");
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPwd, setConfirmPwd] = useState("");
+  const [isSavingPassword, setIsSavingPassword] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+
+  // Sync profile name when stats load
+  useEffect(() => {
+    if (userStats?.name) setProfileName(userStats.name);
+  }, [userStats?.name]);
+
+  const handleSaveProfile = async () => {
+    setIsSavingProfile(true);
+    try {
+      await updateProfile(profileName);
+      toast.success(t("profileUpdated"));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to update profile");
+    } finally {
+      setIsSavingProfile(false);
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (newPassword !== confirmPwd) {
+      toast.error(t("passwordsDoNotMatch"));
+      return;
+    }
+    if (newPassword.length < 6) {
+      toast.error(t("passwordTooShort"));
+      return;
+    }
+    setIsSavingPassword(true);
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw error;
+      toast.success(t("passwordUpdated"));
+      setNewPassword("");
+      setConfirmPwd("");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to update password";
+      toast.error(message);
+    } finally {
+      setIsSavingPassword(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setIsDeletingAccount(true);
+    try {
+      await deleteAccount();
+      toast.success(t("accountDeleted"));
+      router.push("/");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to delete account");
+    } finally {
+      setIsDeletingAccount(false);
+      setShowDeleteConfirm(false);
+    }
+  };
 
   // User data from database
   const user = {
@@ -294,7 +375,8 @@ export default function SettingsPage() {
                           </Label>
                           <Input
                             id="name"
-                            defaultValue={user?.name || ""}
+                            value={profileName}
+                            onChange={(e) => setProfileName(e.target.value)}
                             placeholder={t("name")}
                             className="bg-elevated/50 border-border/50 focus:border-primary"
                           />
@@ -314,8 +396,17 @@ export default function SettingsPage() {
                             {t("emailCannotChange")}
                           </p>
                         </div>
-                        <Button variant="glow" className="mt-2">
-                          {t("saveChanges")}
+                        <Button
+                          variant="glow"
+                          className="mt-2"
+                          onClick={handleSaveProfile}
+                          disabled={isSavingProfile}
+                        >
+                          {isSavingProfile ? (
+                            <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{t("updatingProfile")}</>
+                          ) : (
+                            t("saveChanges")
+                          )}
                         </Button>
                       </>
                     )}
@@ -558,18 +649,12 @@ export default function SettingsPage() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
-                      <Label className="text-foreground font-medium">{t("currentPassword")}</Label>
-                      <Input
-                        type="password"
-                        placeholder="••••••••"
-                        className="bg-elevated/50 border-border/50 focus:border-primary"
-                      />
-                    </div>
-                    <div className="space-y-2">
                       <Label className="text-foreground font-medium">{t("newPassword")}</Label>
                       <Input
                         type="password"
                         placeholder="••••••••"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
                         className="bg-elevated/50 border-border/50 focus:border-primary"
                       />
                     </div>
@@ -578,11 +663,22 @@ export default function SettingsPage() {
                       <Input
                         type="password"
                         placeholder="••••••••"
+                        value={confirmPwd}
+                        onChange={(e) => setConfirmPwd(e.target.value)}
                         className="bg-elevated/50 border-border/50 focus:border-primary"
                       />
+                      <p className="text-xs text-muted-foreground">Minimum 6 characters</p>
                     </div>
-                    <Button variant="glow">
-                      {t("updatePassword")}
+                    <Button
+                      variant="glow"
+                      onClick={handleChangePassword}
+                      disabled={isSavingPassword || !newPassword}
+                    >
+                      {isSavingPassword ? (
+                        <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{t("updatingPassword")}</>
+                      ) : (
+                        t("updatePassword")
+                      )}
                     </Button>
                   </CardContent>
                 </Card>
@@ -687,6 +783,7 @@ export default function SettingsPage() {
                           <Button
                             variant="destructive"
                             className="bg-error hover:bg-error/90"
+                            onClick={() => setShowDeleteConfirm(true)}
                           >
                             {t("deleteAccount")}
                           </Button>
@@ -700,6 +797,47 @@ export default function SettingsPage() {
           </AnimatePresence>
         </div>
       </div>
+
+      {/* Delete Account Confirmation Dialog */}
+      <AlertDialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <AlertDialogContent className="bg-elevated border-border">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-error">
+              {t("deleteAccountConfirmTitle")}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("deleteAccountConfirmDesc")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="space-y-2 py-2">
+            <Label className="text-sm text-muted-foreground">
+              {t("typeDeleteToConfirm")}
+            </Label>
+            <Input
+              value={deleteConfirmText}
+              onChange={(e) => setDeleteConfirmText(e.target.value)}
+              placeholder="DELETE"
+              className="bg-elevated/50 border-border/50"
+            />
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteConfirmText("")}>
+              {t("cancel")}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteAccount}
+              className="bg-error hover:bg-error/90"
+              disabled={deleteConfirmText !== "DELETE" || isDeletingAccount}
+            >
+              {isDeletingAccount ? (
+                <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{t("deletingAccount")}</>
+              ) : (
+                t("deleteAccount")
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

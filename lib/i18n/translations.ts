@@ -296,6 +296,40 @@ export const translations = {
     perExportedResume: "per CV exportat",
     purchaseExport: "Cumpără Export",
 
+    // Forgot/Reset Password
+    forgotPasswordTitle: "Resetează Parola",
+    forgotPasswordDesc: "Introdu adresa de email și îți vom trimite un link de resetare.",
+    sendResetLink: "Trimite Link de Resetare",
+    sendingResetLink: "Se trimite...",
+    resetEmailSent: "Email Trimis!",
+    resetEmailSentDesc: "Verifică inbox-ul pentru link-ul de resetare a parolei. Verifică și folderul de spam.",
+    backToLogin: "Înapoi la Conectare",
+    resetPasswordTitle: "Setează Parolă Nouă",
+    resetPasswordDesc: "Introdu noua parolă pentru contul tău.",
+    resetPassword: "Resetează Parola",
+    resettingPassword: "Se resetează...",
+    passwordResetSuccess: "Parolă resetată cu succes!",
+    redirectingToDashboard: "Se redirecționează către panou...",
+    passwordsDoNotMatch: "Parolele nu se potrivesc",
+    passwordTooShort: "Parola trebuie să aibă minim 6 caractere",
+
+    // Resumes Page
+    allResumes: "Toate CV-urile",
+    allResumesDesc: "Toate CV-urile tale într-un singur loc",
+    noResumesFound: "Niciun CV găsit",
+    searchResumes: "Caută CV-uri...",
+
+    // Settings Actions
+    profileUpdated: "Profil actualizat cu succes",
+    passwordUpdated: "Parolă actualizată cu succes",
+    accountDeleted: "Cont șters cu succes",
+    deletingAccount: "Se șterge contul...",
+    updatingProfile: "Se actualizează...",
+    updatingPassword: "Se actualizează...",
+    deleteAccountConfirmTitle: "Ești sigur?",
+    deleteAccountConfirmDesc: "Această acțiune este ireversibilă. Toate CV-urile și datele tale vor fi șterse permanent.",
+    typeDeleteToConfirm: "Scrie DELETE pentru a confirma",
+
     // Misc
     loading: "Se încarcă...",
     error: "Eroare",
@@ -622,6 +656,40 @@ export const translations = {
     payPerResumeDesc: "Pay only for the resumes you export",
     perExportedResume: "per exported resume",
     purchaseExport: "Purchase Export",
+
+    // Forgot/Reset Password
+    forgotPasswordTitle: "Reset Password",
+    forgotPasswordDesc: "Enter your email address and we'll send you a reset link.",
+    sendResetLink: "Send Reset Link",
+    sendingResetLink: "Sending...",
+    resetEmailSent: "Email Sent!",
+    resetEmailSentDesc: "Check your inbox for the password reset link. Check your spam folder too.",
+    backToLogin: "Back to Sign In",
+    resetPasswordTitle: "Set New Password",
+    resetPasswordDesc: "Enter a new password for your account.",
+    resetPassword: "Reset Password",
+    resettingPassword: "Resetting...",
+    passwordResetSuccess: "Password reset successfully!",
+    redirectingToDashboard: "Redirecting to dashboard...",
+    passwordsDoNotMatch: "Passwords do not match",
+    passwordTooShort: "Password must be at least 6 characters",
+
+    // Resumes Page
+    allResumes: "All Resumes",
+    allResumesDesc: "All your resumes in one place",
+    noResumesFound: "No resumes found",
+    searchResumes: "Search resumes...",
+
+    // Settings Actions
+    profileUpdated: "Profile updated successfully",
+    passwordUpdated: "Password updated successfully",
+    accountDeleted: "Account deleted successfully",
+    deletingAccount: "Deleting account...",
+    updatingProfile: "Updating...",
+    updatingPassword: "Updating...",
+    deleteAccountConfirmTitle: "Are you sure?",
+    deleteAccountConfirmDesc: "This action is irreversible. All your resumes and data will be permanently deleted.",
+    typeDeleteToConfirm: "Type DELETE to confirm",
 
     // Misc
     loading: "Loading...",
