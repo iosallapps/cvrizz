@@ -40,7 +40,7 @@ export default function AuthLayout({
               <span className="text-2xl">📝</span>
             </div>
             <span className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors">
-              ResumeAI
+              CV Rizz
             </span>
           </Link>
         </motion.div>

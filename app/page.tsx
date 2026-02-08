@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { motion, useScroll, useTransform, useSpring, useMotionValue, useAnimationFrame } from "framer-motion";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
@@ -50,57 +50,10 @@ function AnimatedCounter({ value, suffix = "" }: { value: number; suffix?: strin
   return <span>{count}{suffix}</span>;
 }
 
-// Floating particle component
-function FloatingParticle({ delay, duration, className }: { delay: number; duration: number; className: string }) {
-  return (
-    <motion.div
-      className={cn("absolute rounded-full", className)}
-      initial={{ opacity: 0, scale: 0 }}
-      animate={{
-        opacity: [0, 1, 1, 0],
-        scale: [0, 1, 1, 0],
-        y: [0, -100, -200, -300],
-      }}
-      transition={{
-        duration,
-        delay,
-        repeat: Infinity,
-        ease: "easeOut",
-      }}
-    />
-  );
-}
 
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { t, language } = useLanguage();
-  const { scrollY } = useScroll();
-
-  // Parallax transforms
-  const heroY = useTransform(scrollY, [0, 500], [0, 150]);
-  const heroOpacity = useTransform(scrollY, [0, 300], [1, 0]);
-  const mockupY = useTransform(scrollY, [0, 500], [0, -50]);
-  const mockupScale = useTransform(scrollY, [0, 300], [1, 0.95]);
-
-  // Mouse parallax for floating elements
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const { clientX, clientY } = e;
-      const { innerWidth, innerHeight } = window;
-      mouseX.set((clientX - innerWidth / 2) / 50);
-      mouseY.set((clientY - innerHeight / 2) / 50);
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY]);
-
-  const springConfig = { stiffness: 100, damping: 30 };
-  const floatX = useSpring(mouseX, springConfig);
-  const floatY = useSpring(mouseY, springConfig);
 
   const features = [
     {
@@ -147,89 +100,24 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-base relative overflow-x-hidden">
-      {/* Animated Gradient Background */}
+      {/* Static Gradient Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        {/* Animated gradient orbs */}
-        <motion.div
-          className="absolute w-[800px] h-[800px] rounded-full opacity-30 blur-[120px]"
+        <div
+          className="absolute w-[600px] h-[600px] rounded-full opacity-20 blur-[120px]"
           style={{
             background: "radial-gradient(circle, oklch(0.6 0.3 280) 0%, transparent 70%)",
-            top: "-20%",
-            left: "-10%",
-          }}
-          animate={{
-            x: [0, 100, 0],
-            y: [0, 50, 0],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut",
+            top: "-15%",
+            left: "-5%",
           }}
         />
-        <motion.div
-          className="absolute w-[600px] h-[600px] rounded-full opacity-25 blur-[100px]"
+        <div
+          className="absolute w-[500px] h-[500px] rounded-full opacity-15 blur-[100px]"
           style={{
             background: "radial-gradient(circle, oklch(0.65 0.25 200) 0%, transparent 70%)",
             bottom: "-10%",
             right: "-5%",
           }}
-          animate={{
-            x: [0, -80, 0],
-            y: [0, -60, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
         />
-        <motion.div
-          className="absolute w-[400px] h-[400px] rounded-full opacity-20 blur-[80px]"
-          style={{
-            background: "radial-gradient(circle, oklch(0.7 0.2 320) 0%, transparent 70%)",
-            top: "40%",
-            right: "20%",
-          }}
-          animate={{
-            x: [0, 50, 0],
-            y: [0, -30, 0],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-
-        {/* Noise texture overlay */}
-        <div
-          className="absolute inset-0 opacity-[0.015]"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-          }}
-        />
-
-        {/* Grid */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
-            `,
-            backgroundSize: '80px 80px',
-          }}
-        />
-
-        {/* Floating particles */}
-        <FloatingParticle delay={0} duration={4} className="w-2 h-2 bg-primary/40 left-[10%] top-[60%]" />
-        <FloatingParticle delay={1} duration={5} className="w-1.5 h-1.5 bg-ai/40 left-[20%] top-[70%]" />
-        <FloatingParticle delay={2} duration={4.5} className="w-2 h-2 bg-purple-500/40 right-[15%] top-[50%]" />
-        <FloatingParticle delay={0.5} duration={5.5} className="w-1 h-1 bg-cyan-500/40 right-[25%] top-[65%]" />
-        <FloatingParticle delay={1.5} duration={4} className="w-1.5 h-1.5 bg-emerald-500/40 left-[40%] top-[80%]" />
       </div>
 
       {/* Header */}
@@ -237,14 +125,10 @@ export default function HomePage() {
         <div className="mx-4 lg:mx-8 mt-4">
           <div className="bg-surface/60 backdrop-blur-2xl border border-border/50 rounded-2xl px-4 lg:px-6 h-14 flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2.5 group">
-              <motion.div
-                className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-ai flex items-center justify-center shadow-lg shadow-primary/25"
-                whileHover={{ scale: 1.05, rotate: 5 }}
-                transition={{ type: "spring", stiffness: 400 }}
-              >
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-ai flex items-center justify-center shadow-lg shadow-primary/25">
                 <FileText className="h-4 w-4 text-white" />
-              </motion.div>
-              <span className="font-bold text-lg text-foreground">ResumeAI</span>
+              </div>
+              <span className="font-bold text-lg text-foreground">CV Rizz</span>
             </Link>
 
             {/* Desktop Nav */}
@@ -300,10 +184,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center pt-24 pb-20">
         <div className="container mx-auto px-4 lg:px-8">
-          <motion.div
-            style={{ y: heroY, opacity: heroOpacity }}
-            className="max-w-5xl mx-auto text-center"
-          >
+          <div className="max-w-5xl mx-auto text-center">
             {/* Badge */}
             <motion.div
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
@@ -326,19 +207,12 @@ export default function HomePage() {
               </div>
             </motion.div>
 
-            {/* Animated Headline */}
+            {/* Headline */}
             <div className="mb-8">
               <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[1.05]">
                 {words.map((word, index) => (
-                  <motion.span
+                  <span
                     key={index}
-                    initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
-                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                    transition={{
-                      duration: 0.5,
-                      delay: 0.1 + index * 0.1,
-                      ease: [0.25, 0.4, 0.25, 1],
-                    }}
                     className={cn(
                       "inline-block mr-[0.25em]",
                       index >= (language === "ro" ? 4 : 4)
@@ -347,40 +221,24 @@ export default function HomePage() {
                     )}
                   >
                     {word}
-                  </motion.span>
+                  </span>
                 ))}
               </h1>
             </div>
 
             {/* Subheadline */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-              className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-2xl mx-auto mb-10"
-            >
+            <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-2xl mx-auto mb-10">
               {language === "ro"
                 ? "Editor intuitiv. Template-uri profesionale. AI care scrie pentru tine."
                 : "Intuitive editor. Professional templates. AI that writes for you."}
-            </motion.p>
+            </p>
 
             {/* CTA Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.7 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
-            >
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
               <Button variant="gradient" size="xl" className="group shadow-2xl shadow-primary/30" asChild>
                 <Link href="/signup">
                   {language === "ro" ? "Începe gratuit" : "Start for free"}
-                  <motion.span
-                    className="ml-2"
-                    animate={{ x: [0, 4, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                  >
-                    <ArrowRight className="h-5 w-5" />
-                  </motion.span>
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
               <Button variant="outline" size="xl" className="group backdrop-blur-sm" asChild>
@@ -389,15 +247,10 @@ export default function HomePage() {
                   {language === "ro" ? "Vezi demo" : "Watch demo"}
                 </Link>
               </Button>
-            </motion.div>
+            </div>
 
             {/* Stats Row */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.8 }}
-              className="flex flex-wrap justify-center gap-8 md:gap-12"
-            >
+            <div className="flex flex-wrap justify-center gap-8 md:gap-12">
               <div className="text-center">
                 <div className="text-3xl md:text-4xl font-bold text-foreground">
                   <AnimatedCounter value={500} suffix="+" />
@@ -423,25 +276,16 @@ export default function HomePage() {
                   {language === "ro" ? "Rating utilizatori" : "User rating"}
                 </div>
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
           {/* Hero Visual */}
-          <motion.div
-            style={{ y: mockupY, scale: mockupScale }}
-            initial={{ opacity: 0, y: 60 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="mt-20 max-w-6xl mx-auto relative"
-          >
+          <div className="mt-20 max-w-6xl mx-auto relative">
             {/* Glow behind mockup */}
             <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-ai/20 to-purple-500/20 blur-3xl scale-95" />
 
             {/* Main mockup */}
-            <motion.div
-              style={{ x: floatX, y: floatY }}
-              className="relative"
-            >
+            <div className="relative">
               <div className="relative bg-surface/80 backdrop-blur-2xl rounded-2xl lg:rounded-3xl border border-border/50 p-2 md:p-3 shadow-2xl">
                 {/* Browser chrome */}
                 <div className="flex items-center gap-2 mb-2 md:mb-3 px-2">
@@ -453,7 +297,7 @@ export default function HomePage() {
                   <div className="flex-1 mx-4 hidden sm:block">
                     <div className="bg-elevated/80 rounded-lg px-4 py-2 text-xs text-muted-foreground text-center flex items-center justify-center gap-2">
                       <Shield className="h-3 w-3 text-success" />
-                      resumeai.com/editor
+                      cvrizz.com/editor
                     </div>
                   </div>
                 </div>
@@ -465,11 +309,8 @@ export default function HomePage() {
                     <div className="hidden lg:flex flex-col border-r border-border/50 p-4">
                       <div className="space-y-2 mb-6">
                         {["Personal Info", "Experience", "Education", "Skills"].map((item, i) => (
-                          <motion.div
+                          <div
                             key={item}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: 1 + i * 0.1 }}
                             className={cn(
                               "h-10 rounded-lg flex items-center px-3 gap-3 cursor-pointer transition-colors",
                               i === 0 ? "bg-primary/10 text-primary" : "hover:bg-hover text-muted-foreground"
@@ -482,17 +323,12 @@ export default function HomePage() {
                               {i + 1}
                             </div>
                             <span className="text-sm font-medium">{item}</span>
-                          </motion.div>
+                          </div>
                         ))}
                       </div>
 
                       {/* AI Assistant Card */}
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 1.5 }}
-                        className="mt-auto p-4 rounded-xl bg-gradient-to-br from-ai/10 via-purple-500/5 to-transparent border border-ai/20"
-                      >
+                      <div className="mt-auto p-4 rounded-xl bg-gradient-to-br from-ai/10 via-purple-500/5 to-transparent border border-ai/20">
                         <div className="flex items-center gap-2 mb-3">
                           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-ai to-purple-500 flex items-center justify-center">
                             <Sparkles className="h-4 w-4 text-white" />
@@ -505,17 +341,12 @@ export default function HomePage() {
                         <div className="h-9 bg-ai/10 rounded-lg border border-ai/20 flex items-center px-3">
                           <span className="text-xs text-ai">Generate bullet points...</span>
                         </div>
-                      </motion.div>
+                      </div>
                     </div>
 
                     {/* Center - Form Area */}
                     <div className="p-4 lg:p-6 border-r border-border/50 hidden md:block">
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 1.2 }}
-                        className="space-y-4"
-                      >
+                      <div className="space-y-4">
                         <div className="flex items-center gap-3 mb-6">
                           <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                             <FileText className="h-5 w-5 text-primary" />
@@ -531,25 +362,13 @@ export default function HomePage() {
                         </div>
                         <div className="h-10 bg-elevated rounded-lg border border-border/50" />
                         <div className="h-24 bg-elevated rounded-lg border border-border/50" />
-                      </motion.div>
+                      </div>
                     </div>
 
                     {/* Right - Preview */}
                     <div className="p-4 lg:p-6 bg-muted/30 flex items-center justify-center">
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 1.3, type: "spring" }}
-                        className="w-full max-w-[240px]"
-                      >
+                      <div className="w-full max-w-[240px]">
                         <div className="aspect-[8.5/11] bg-white rounded-lg shadow-2xl p-5 space-y-3 relative overflow-hidden">
-                          {/* Shine effect */}
-                          <motion.div
-                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -skew-x-12"
-                            initial={{ x: "-100%" }}
-                            animate={{ x: "200%" }}
-                            transition={{ duration: 2, delay: 2, repeat: Infinity, repeatDelay: 5 }}
-                          />
                           {/* Content */}
                           <div className="text-center pb-2 border-b border-gray-200">
                             <div className="h-3.5 bg-gray-800 rounded w-24 mx-auto mb-1.5" />
@@ -572,20 +391,14 @@ export default function HomePage() {
                             <div className="h-1.5 bg-gray-200 rounded w-9/12" />
                           </div>
                         </div>
-                      </motion.div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Floating cards */}
-              <motion.div
-                initial={{ opacity: 0, x: 30, y: -20 }}
-                animate={{ opacity: 1, x: 0, y: 0 }}
-                transition={{ delay: 1.6, type: "spring" }}
-                style={{ x: useTransform(floatX, v => v * 2), y: useTransform(floatY, v => v * 2) }}
-                className="absolute -top-6 -right-6 lg:-right-12 hidden sm:block"
-              >
+              <div className="absolute -top-6 -right-6 lg:-right-12 hidden sm:block">
                 <div className="bg-surface/95 backdrop-blur-xl border border-border/50 rounded-2xl p-4 shadow-2xl">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-ai to-purple-500 flex items-center justify-center shadow-lg shadow-ai/25">
@@ -597,15 +410,9 @@ export default function HomePage() {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
 
-              <motion.div
-                initial={{ opacity: 0, x: -30, y: 20 }}
-                animate={{ opacity: 1, x: 0, y: 0 }}
-                transition={{ delay: 1.8, type: "spring" }}
-                style={{ x: useTransform(floatX, v => v * -1.5), y: useTransform(floatY, v => v * -1.5) }}
-                className="absolute -bottom-6 -left-6 lg:-left-12 hidden sm:block"
-              >
+              <div className="absolute -bottom-6 -left-6 lg:-left-12 hidden sm:block">
                 <div className="bg-surface/95 backdrop-blur-xl border border-success/30 rounded-2xl p-4 shadow-2xl">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-success/20 flex items-center justify-center">
@@ -617,9 +424,9 @@ export default function HomePage() {
                     </div>
                   </div>
                 </div>
-              </motion.div>
-            </motion.div>
-          </motion.div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -754,7 +561,7 @@ export default function HomePage() {
               <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-ai flex items-center justify-center">
                 <FileText className="h-4 w-4 text-white" />
               </div>
-              <span className="font-bold text-foreground">ResumeAI</span>
+              <span className="font-bold text-foreground">CV Rizz</span>
             </div>
 
             <div className="flex gap-6 text-sm">
@@ -767,7 +574,7 @@ export default function HomePage() {
             </div>
 
             <p className="text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} ResumeAI
+              &copy; {new Date().getFullYear()} CV Rizz
             </p>
           </div>
         </div>

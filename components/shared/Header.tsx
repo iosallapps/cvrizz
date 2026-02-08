@@ -73,7 +73,7 @@ export function Header({ user }: HeaderProps) {
               <IconDocument className="h-5 w-5 text-primary" />
             </div>
             <span className="font-bold text-xl text-foreground hidden sm:inline">
-              ResumeAI
+              CV Rizz
             </span>
           </Link>
         </div>

@@ -124,8 +124,8 @@ export function PublicResumeView({ template, templateData, title }: PublicResume
       <footer className="py-8 text-center text-sm text-muted-foreground">
         <p>
           {language === "ro"
-            ? "CV creat cu ResumeAI"
-            : "Resume created with ResumeAI"
+            ? "CV creat cu CV Rizz"
+            : "Resume created with CV Rizz"
           }
         </p>
       </footer>

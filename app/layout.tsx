@@ -9,8 +9,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "CV Builder - Create Professional Resumes",
-    template: "%s | CV Builder",
+    default: "CV Rizz - Create Professional Resumes",
+    template: "%s | CV Rizz",
   },
   description:
     "Create professional, ATS-friendly resumes with AI assistance. Export to PDF in minutes.",
