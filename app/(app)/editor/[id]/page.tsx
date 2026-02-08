@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, use } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,7 +51,8 @@ import { SkillsForm } from "@/components/editor/SkillsForm";
 import { ExportDropdown, ExportDropdownMobile } from "@/components/editor/ExportDropdown";
 import { ShareDialog } from "@/components/editor/ShareDialog";
 
-export default function EditorPage({ params }: { params: { id: string } }) {
+export default function EditorPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const { t, language } = useLanguage();
   const [activeSection, setActiveSection] = useState("basics");
   const [zoom, setZoom] = useState(70);
@@ -70,7 +71,7 @@ export default function EditorPage({ params }: { params: { id: string } }) {
     setResumeData,
     setResumeMetadata,
     hasPendingChanges,
-  } = useResume(params.id);
+  } = useResume(id);
 
   // Use resume data or defaults
   const resumeData = resume || DEFAULT_RESUME_DATA;
@@ -320,17 +321,17 @@ export default function EditorPage({ params }: { params: { id: string } }) {
           {/* Right: Status + Actions */}
           <div className="flex items-center gap-2 shrink-0">
             <SaveStatusIndicator />
-            <ShareDialog resumeId={params.id} disabled={isLoading} />
+            <ShareDialog resumeId={id} disabled={isLoading} />
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <ExportDropdown
-                resumeId={params.id}
+                resumeId={id}
                 className="hidden sm:flex h-10"
                 disabled={isLoading}
                 onExportPdf={handleExportPdf}
               />
             </motion.div>
             <ExportDropdownMobile
-              resumeId={params.id}
+              resumeId={id}
               className="sm:hidden h-11 w-11 min-h-[44px] min-w-[44px]"
               disabled={isLoading}
               onExportPdf={handleExportPdf}
