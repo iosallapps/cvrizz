@@ -17,7 +17,6 @@ import {
   Clock,
   MoreVertical,
   Trash2,
-  Copy,
   Search,
   Loader2,
 } from "lucide-react";
@@ -27,7 +26,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -174,11 +172,6 @@ export default function ResumesPage() {
                           align="end"
                           className="bg-elevated/95 backdrop-blur-xl border-border"
                         >
-                          <DropdownMenuItem className="text-foreground">
-                            <Copy className="h-4 w-4 mr-2" />
-                            {t("duplicate")}
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator className="bg-border" />
                           <DropdownMenuItem
                             className="text-error focus:text-error"
                             onClick={(e) => {
@@ -217,9 +210,9 @@ export default function ResumesPage() {
       >
         <AlertDialogContent className="bg-elevated border-border">
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("delete")} CV</AlertDialogTitle>
+            <AlertDialogTitle>{t("deleteResumeTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("deleteWarning")}
+              {t("deleteResumeDesc")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

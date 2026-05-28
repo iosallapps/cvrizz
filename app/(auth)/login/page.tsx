@@ -51,7 +51,7 @@ export default function LoginPage() {
       router.push(redirectTo);
       router.refresh();
     } catch {
-      toast.error("An unexpected error occurred");
+      toast.error(t("errorUnexpected"));
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +73,7 @@ export default function LoginPage() {
         setIsLoading(false);
       }
     } catch {
-      toast.error("An unexpected error occurred");
+      toast.error(t("errorUnexpected"));
       setIsLoading(false);
     }
   };

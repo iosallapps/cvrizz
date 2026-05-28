@@ -10,14 +10,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Plus, FileText, Clock, MoreVertical, Trash2, Copy, ArrowRight, TrendingUp, Zap, Target, Sparkles, ChevronRight, Loader2 } from "lucide-react";
+import { Plus, FileText, Clock, MoreVertical, Trash2, ArrowRight, TrendingUp, Zap, Target, Sparkles, ChevronRight, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { staggerContainer, staggerItem } from "@/lib/animations";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -97,15 +96,6 @@ export default function DashboardPage() {
       borderColor: "border-primary/20",
     },
     {
-      label: t("aiCreditsLeft"),
-      value: userStats?.aiCreditsRemaining ?? 0,
-      icon: Zap,
-      gradient: "from-ai/20 to-ai/5",
-      iconBg: "bg-ai/10",
-      iconColor: "text-ai",
-      borderColor: "border-ai/20",
-    },
-    {
       label: t("trialDaysLeftStat"),
       value: userStats?.trialDaysRemaining ?? 0,
       icon: Clock,
@@ -115,7 +105,7 @@ export default function DashboardPage() {
       borderColor: "border-success/20",
     },
     {
-      label: "Profile Score",
+      label: t("profileScore"),
       value: userStats?.profileScore ?? 0,
       suffix: "%",
       icon: Target,
@@ -210,11 +200,11 @@ export default function DashboardPage() {
       </motion.div>
 
       {/* Quick Stats Row - Premium Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {statsLoading ? (
           // Skeleton loading for stats
           <>
-            {[1, 2, 3, 4].map((i) => (
+            {[1, 2, 3].map((i) => (
               <Card key={i} className="bg-surface/80 backdrop-blur-xl border-border/50">
                 <CardContent className="p-4 md:p-5">
                   <div className="flex items-start justify-between mb-3">
@@ -286,7 +276,7 @@ export default function DashboardPage() {
             {resumes.length > 0 && (
               <Button variant="ghost" size="sm" className="group" asChild>
                 <Link href="/resumes">
-                  View all
+                  {t("viewAll")}
                   <ChevronRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
@@ -411,11 +401,6 @@ export default function DashboardPage() {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="bg-elevated/95 backdrop-blur-xl border-border">
-                              <DropdownMenuItem className="text-foreground">
-                                <Copy className="h-4 w-4 mr-2" />
-                                {t("duplicate")}
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator className="bg-border" />
                               <DropdownMenuItem
                                 className="text-error focus:text-error"
                                 onClick={(e) => {
@@ -550,9 +535,9 @@ export default function DashboardPage() {
                 </p>
                 <ul className="space-y-2.5 text-sm text-muted-foreground mb-5">
                   {[
-                    "Unlimited resumes",
-                    "50 AI credits/month",
-                    "Premium templates",
+                    t("unlimitedResumes"),
+                    t("premiumTemplates"),
+                    t("publicShareLinks"),
                   ].map((feature, i) => (
                     <motion.li
                       key={i}
@@ -584,13 +569,13 @@ export default function DashboardPage() {
       <AlertDialog open={!!deleteResumeId} onOpenChange={(open) => !open && setDeleteResumeId(null)}>
         <AlertDialogContent className="bg-elevated border-border">
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Resume</AlertDialogTitle>
+            <AlertDialogTitle>{t("deleteResumeTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this resume? This action cannot be undone.
+              {t("deleteResumeDesc")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteConfirm}
               className="bg-error hover:bg-error/90"
@@ -599,10 +584,10 @@ export default function DashboardPage() {
               {isDeleting ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Deleting...
+                  {t("deleting")}
                 </>
               ) : (
-                "Delete"
+                t("delete")
               )}
             </AlertDialogAction>
           </AlertDialogFooter>

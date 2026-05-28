@@ -43,7 +43,7 @@ export default function ForgotPasswordPage() {
 
       setIsEmailSent(true);
     } catch {
-      toast.error("An unexpected error occurred");
+      toast.error(t("errorUnexpected"));
     } finally {
       setIsLoading(false);
     }

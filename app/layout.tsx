@@ -13,13 +13,13 @@ export const metadata: Metadata = {
     template: "%s | CV Rizz",
   },
   description:
-    "Create professional, ATS-friendly resumes with AI assistance. Export to PDF in minutes.",
-  keywords: ["resume", "cv", "builder", "job", "career", "ATS", "professional"],
+    "Create professional, ATS-friendly resumes in Romanian and English. 10+ editorial templates, export to PDF or Word in minutes.",
+  keywords: ["resume", "cv", "builder", "job", "career", "ATS", "professional", "romanian", "english", "bilingual"],
   metadataBase: new URL("https://www.cvrizz.com"),
   openGraph: {
     title: "CV Rizz - Create Professional Resumes",
     description:
-      "Create professional, ATS-friendly resumes with AI assistance. Export to PDF in minutes.",
+      "Create professional, ATS-friendly resumes in Romanian and English. 10+ editorial templates, export to PDF or Word in minutes.",
     url: "https://www.cvrizz.com",
     siteName: "CV Rizz",
     locale: "ro_RO",
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "CV Rizz - Create Professional Resumes",
     description:
-      "Create professional, ATS-friendly resumes with AI assistance.",
+      "Create professional, ATS-friendly resumes in Romanian and English. Export to PDF or Word in minutes.",
   },
 };
 

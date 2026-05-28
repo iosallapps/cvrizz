@@ -14,7 +14,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   AlertDialog,
@@ -35,15 +34,11 @@ import { updateProfile, deleteAccount } from "@/app/actions/settings";
 import { toast } from "sonner";
 import {
   User,
-  Bell,
   Shield,
   Globe,
   Palette,
   AlertTriangle,
   ChevronRight,
-  Camera,
-  Smartphone,
-  Laptop,
   Check,
   Settings,
   Sparkles,
@@ -54,7 +49,6 @@ type SettingsSection =
   | "profile"
   | "language"
   | "appearance"
-  | "notifications"
   | "security"
   | "danger";
 
@@ -62,7 +56,6 @@ const sectionIcons = {
   profile: { icon: User, color: "text-primary", bg: "bg-primary/10", gradient: "from-primary/20 to-primary/5", border: "border-primary/30" },
   language: { icon: Globe, color: "text-success", bg: "bg-success/10", gradient: "from-success/20 to-success/5", border: "border-success/30" },
   appearance: { icon: Palette, color: "text-ai", bg: "bg-ai/10", gradient: "from-ai/20 to-ai/5", border: "border-ai/30" },
-  notifications: { icon: Bell, color: "text-warning", bg: "bg-warning/10", gradient: "from-warning/20 to-warning/5", border: "border-warning/30" },
   security: { icon: Shield, color: "text-blue-500", bg: "bg-blue-500/10", gradient: "from-blue-500/20 to-blue-500/5", border: "border-blue-500/30" },
   danger: { icon: AlertTriangle, color: "text-error", bg: "bg-error/10", gradient: "from-error/20 to-error/5", border: "border-error/30" },
 };
@@ -160,7 +153,6 @@ export default function SettingsPage() {
     { id: "profile", label: t("profileInformation") },
     { id: "language", label: t("language") },
     { id: "appearance", label: t("appearance") },
-    { id: "notifications", label: t("notifications") },
     { id: "security", label: t("security") },
     { id: "danger", label: t("dangerZone") },
   ];
@@ -318,7 +310,7 @@ export default function SettingsPage() {
                       ) : (
                         <>
                           <motion.div
-                            className="relative group"
+                            className="relative"
                             whileHover={{ scale: 1.02 }}
                           >
                             <Avatar className="h-24 w-24 ring-4 ring-primary/20">
@@ -327,14 +319,6 @@ export default function SettingsPage() {
                                 {initials}
                               </AvatarFallback>
                             </Avatar>
-                            <motion.button
-                              className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition-all"
-                              whileHover={{ scale: 1.05 }}
-                            >
-                              <Camera className="h-6 w-6 text-white" />
-                            </motion.button>
-                            {/* Online indicator */}
-                            <span className="absolute bottom-1 right-1 w-4 h-4 bg-success rounded-full border-2 border-surface" />
                           </motion.div>
                           <div className="flex-1">
                             <CardTitle className="text-foreground text-xl">
@@ -553,72 +537,6 @@ export default function SettingsPage() {
               </motion.div>
             )}
 
-            {/* Notifications Section */}
-            {activeSection === "notifications" && (
-              <motion.div
-                key="notifications"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -30 }}
-                transition={{ duration: 0.3, ease: [0.25, 0.4, 0.25, 1] }}
-              >
-                <Card className="bg-surface/60 backdrop-blur-xl border-border/50 shadow-xl shadow-warning/5">
-                  <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <motion.div
-                        className={cn("p-3 rounded-2xl", sectionIcons.notifications.bg, "border", sectionIcons.notifications.border)}
-                        whileHover={{ scale: 1.05, rotate: 5 }}
-                      >
-                        <Bell className={cn("h-6 w-6", sectionIcons.notifications.color)} />
-                      </motion.div>
-                      <div>
-                        <CardTitle className="text-foreground text-xl">{t("notifications")}</CardTitle>
-                        <CardDescription className="text-muted-foreground">
-                          {t("chooseNotifications")}
-                        </CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <motion.div
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.1 }}
-                      className="flex items-center justify-between p-5 rounded-2xl bg-elevated/30 border border-border/50 hover:border-border transition-all"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="p-2.5 rounded-xl bg-primary/10">
-                          <Bell className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-foreground">{t("emailNotifications")}</p>
-                          <p className="text-sm text-muted-foreground">{t("receiveEmails")}</p>
-                        </div>
-                      </div>
-                      <Switch />
-                    </motion.div>
-                    <motion.div
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.2 }}
-                      className="flex items-center justify-between p-5 rounded-2xl bg-elevated/30 border border-border/50 hover:border-border transition-all"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="p-2.5 rounded-xl bg-ai/10">
-                          <Sparkles className="h-5 w-5 text-ai" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-foreground">{t("marketingEmails")}</p>
-                          <p className="text-sm text-muted-foreground">{t("receiveTips")}</p>
-                        </div>
-                      </div>
-                      <Switch />
-                    </motion.div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            )}
-
             {/* Security Section */}
             {activeSection === "security" && (
               <motion.div
@@ -667,7 +585,7 @@ export default function SettingsPage() {
                         onChange={(e) => setConfirmPwd(e.target.value)}
                         className="bg-elevated/50 border-border/50 focus:border-primary"
                       />
-                      <p className="text-xs text-muted-foreground">Minimum 6 characters</p>
+                      <p className="text-xs text-muted-foreground">{t("minPasswordChars")}</p>
                     </div>
                     <Button
                       variant="glow"
@@ -683,60 +601,6 @@ export default function SettingsPage() {
                   </CardContent>
                 </Card>
 
-                {/* Active Sessions */}
-                <Card className="bg-surface/60 backdrop-blur-xl border-border/50">
-                  <CardHeader>
-                    <CardTitle className="text-foreground text-lg">{t("sessions")}</CardTitle>
-                    <CardDescription className="text-muted-foreground">
-                      {t("sessionsDesc")}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <motion.div
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      className="flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/30"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="p-2.5 rounded-xl bg-primary/20">
-                          <Laptop className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <p className="font-semibold text-foreground">MacBook Pro</p>
-                            <span className="text-xs px-2.5 py-0.5 rounded-full bg-success/20 text-success font-semibold">
-                              {t("currentSession")}
-                            </span>
-                          </div>
-                          <p className="text-sm text-muted-foreground">
-                            Chrome · Bucharest, Romania
-                          </p>
-                        </div>
-                      </div>
-                    </motion.div>
-                    <motion.div
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.1 }}
-                      className="flex items-center justify-between p-4 rounded-2xl bg-elevated/30 border border-border/50"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="p-2.5 rounded-xl bg-muted/50">
-                          <Smartphone className="h-5 w-5 text-muted-foreground" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-foreground">iPhone 15 Pro</p>
-                          <p className="text-sm text-muted-foreground">
-                            Safari · {t("lastActive")}: 2h ago
-                          </p>
-                        </div>
-                      </div>
-                    </motion.div>
-                    <Button variant="outline" className="w-full mt-4 border-border/50 hover:bg-hover/50">
-                      {t("signOutAll")}
-                    </Button>
-                  </CardContent>
-                </Card>
               </motion.div>
             )}
 

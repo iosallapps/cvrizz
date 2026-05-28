@@ -52,10 +52,10 @@ export default function SignupPage() {
         return;
       }
 
-      toast.success("Account created! Please check your email to verify.");
+      toast.success(t("signupSuccess"));
       router.push("/login");
     } catch {
-      toast.error("An unexpected error occurred");
+      toast.error(t("errorUnexpected"));
     } finally {
       setIsLoading(false);
     }
@@ -77,7 +77,7 @@ export default function SignupPage() {
         setIsLoading(false);
       }
     } catch {
-      toast.error("An unexpected error occurred");
+      toast.error(t("errorUnexpected"));
       setIsLoading(false);
     }
   };
@@ -141,7 +141,7 @@ export default function SignupPage() {
                 <Input
                   id="name"
                   type="text"
-                  placeholder="John Doe"
+                  placeholder={t("namePlaceholder")}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
@@ -192,7 +192,7 @@ export default function SignupPage() {
                 />
               </div>
               <p className="text-xs text-muted-foreground">
-                Minimum 6 characters
+                {t("minPasswordChars")}
               </p>
             </motion.div>
 

@@ -359,6 +359,30 @@ export const translations = {
     weeksAgo: "Acum {weeks} săptămâni",
     monthsAgo: "Acum {months} luni",
     yearsAgo: "Acum {years} ani",
+
+    // Dashboard extras
+    profileScore: "Scor profil",
+    viewAll: "Vezi toate",
+    aiCreditsPerMonth: "50 generări AI / lună",
+    deleteResumeTitle: "Șterge acest CV",
+    deleteResumeDesc: "Ești sigur că vrei să ștergi acest CV? Acțiunea este definitivă.",
+    deleting: "Se șterge...",
+
+    // Error / Not found
+    somethingWrong: "Ceva nu a mers bine",
+    errorDescription: "Ne pare rău. A apărut o eroare neașteptată.",
+    tryAgain: "Încearcă din nou",
+    goHome: "Înapoi acasă",
+    errorIdLabel: "ID eroare",
+    pageNotFound: "Pagina nu a fost găsită",
+    notFoundDesc: "Pagina pe care o cauți a fost mutată sau ștearsă.",
+
+    // Auth toasts + hints
+    errorUnexpected: "A apărut o eroare neașteptată.",
+    signupSuccess: "Cont creat. Verifică-ți emailul pentru confirmare.",
+    minPasswordChars: "Minim 6 caractere",
+    namePlaceholder: "Numele tău complet",
+    publicShareLinks: "Link-uri publice de CV",
   },
   en: {
     // Navigation
@@ -720,6 +744,30 @@ export const translations = {
     weeksAgo: "{weeks} weeks ago",
     monthsAgo: "{months} months ago",
     yearsAgo: "{years} years ago",
+
+    // Dashboard extras
+    profileScore: "Profile score",
+    viewAll: "View all",
+    aiCreditsPerMonth: "50 AI generations / month",
+    deleteResumeTitle: "Delete this resume",
+    deleteResumeDesc: "Are you sure you want to delete this resume? This action cannot be undone.",
+    deleting: "Deleting...",
+
+    // Error / Not found
+    somethingWrong: "Something went wrong",
+    errorDescription: "We apologize for the inconvenience. An unexpected error has occurred.",
+    tryAgain: "Try again",
+    goHome: "Go home",
+    errorIdLabel: "Error ID",
+    pageNotFound: "Page not found",
+    notFoundDesc: "Sorry, we couldn't find the page you're looking for. It might have been moved or deleted.",
+
+    // Auth toasts + hints
+    errorUnexpected: "An unexpected error occurred.",
+    signupSuccess: "Account created. Please check your email to verify.",
+    minPasswordChars: "Minimum 6 characters",
+    namePlaceholder: "Your full name",
+    publicShareLinks: "Public share links",
   },
 } as const;
 

@@ -55,7 +55,7 @@ export default function ResetPasswordPage() {
       setIsSuccess(true);
       setTimeout(() => router.push("/dashboard"), 2000);
     } catch {
-      toast.error("An unexpected error occurred");
+      toast.error(t("errorUnexpected"));
     } finally {
       setIsLoading(false);
     }
@@ -159,7 +159,7 @@ export default function ResetPasswordPage() {
                 />
               </div>
               <p className="text-xs text-muted-foreground">
-                Minimum 6 characters
+                {t("minPasswordChars")}
               </p>
             </motion.div>
 

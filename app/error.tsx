@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, RefreshCw, Home } from "lucide-react";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function Error({
   error,
@@ -12,14 +13,14 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const { t } = useLanguage();
+
   useEffect(() => {
-    // Log the error to an error reporting service
     console.error("Application error:", error);
   }, [error]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-base">
-      {/* Background decoration */}
       <motion.div
         className="absolute inset-0 pointer-events-none overflow-hidden"
         initial={{ opacity: 0 }}
@@ -39,7 +40,6 @@ export default function Error({
         animate={{ opacity: 1, y: 0 }}
         className="relative text-center space-y-6 p-8 max-w-md mx-auto"
       >
-        {/* Icon */}
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -59,7 +59,6 @@ export default function Error({
           </div>
         </motion.div>
 
-        {/* Text */}
         <div className="space-y-2">
           <motion.h1
             initial={{ opacity: 0, y: 10 }}
@@ -67,7 +66,7 @@ export default function Error({
             transition={{ delay: 0.2 }}
             className="text-2xl font-bold text-foreground"
           >
-            Something went wrong!
+            {t("somethingWrong")}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}
@@ -75,11 +74,10 @@ export default function Error({
             transition={{ delay: 0.3 }}
             className="text-muted-foreground"
           >
-            We apologize for the inconvenience. An unexpected error has occurred.
+            {t("errorDescription")}
           </motion.p>
         </div>
 
-        {/* Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -88,7 +86,7 @@ export default function Error({
         >
           <Button onClick={() => reset()} variant="glow" className="gap-2">
             <RefreshCw className="h-4 w-4" />
-            Try again
+            {t("tryAgain")}
           </Button>
           <Button
             onClick={() => (window.location.href = "/")}
@@ -96,11 +94,10 @@ export default function Error({
             className="gap-2"
           >
             <Home className="h-4 w-4" />
-            Go home
+            {t("goHome")}
           </Button>
         </motion.div>
 
-        {/* Dev error details */}
         {process.env.NODE_ENV === "development" && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -113,7 +110,7 @@ export default function Error({
             </p>
             {error.digest && (
               <p className="text-xs text-muted-foreground mt-2">
-                Error ID: {error.digest}
+                {t("errorIdLabel")}: {error.digest}
               </p>
             )}
           </motion.div>

@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Check,
+  CheckCircle2,
   Sparkles,
   Shield,
   CreditCard,
@@ -60,7 +61,7 @@ export default function BillingPage() {
       features: [
         { text: language === "ro" ? "CV-uri nelimitate" : "Unlimited resumes", icon: FileText },
         { text: language === "ro" ? "Toate template-urile premium" : "All premium templates", icon: Crown },
-        { text: language === "ro" ? "50 generări AI/lună" : "50 AI generations/month", icon: Sparkles },
+        { text: language === "ro" ? "Bilingv RO + EN" : "Bilingual RO + EN", icon: Sparkles },
         { text: language === "ro" ? "Export PDF & Word" : "PDF & Word export", icon: FileText },
         { text: language === "ro" ? "Suport prioritar" : "Priority support", icon: Zap },
       ],
@@ -74,7 +75,7 @@ export default function BillingPage() {
       description: language === "ro" ? "Cea mai bună valoare" : "Best value",
       features: [
         { text: language === "ro" ? "Tot ce include Lunar" : "Everything in Monthly", icon: Check },
-        { text: language === "ro" ? "100 generări AI/lună" : "100 AI generations/month", icon: Sparkles },
+        { text: language === "ro" ? "Acces anticipat la template-uri noi" : "Early access to new templates", icon: Sparkles },
         { text: language === "ro" ? "Link-uri publice CV" : "Public resume links", icon: Link2 },
         { text: language === "ro" ? "Analiză CV-uri" : "Resume analytics", icon: BarChart },
         { text: language === "ro" ? "2 luni gratuite" : "2 months free", icon: Crown },
@@ -375,6 +376,7 @@ export default function BillingPage() {
 
       {/* Subscription Plans */}
       <motion.div
+        id="plans"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.2 }}
@@ -568,33 +570,56 @@ export default function BillingPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-xl bg-elevated border border-dashed border-border">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center shadow">
-                  <span className="text-xs font-bold text-white tracking-wider">VISA</span>
+            {hasActiveSubscription ? (
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-xl bg-elevated border border-border/50">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-success/10 border border-success/30 flex items-center justify-center">
+                    <CheckCircle2 className="h-5 w-5 text-success" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground">
+                      {language === "ro" ? "Metodă de plată activă" : "Payment method on file"}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {language === "ro"
+                        ? "Gestionează cardul în portalul Stripe"
+                        : "Manage your card in the Stripe portal"}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-medium text-foreground">
-                    {language === "ro" ? "Nicio metodă de plată" : "No payment method"}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {language === "ro" ? "Adaugă un card pentru a te abona" : "Add a card to subscribe"}
-                  </p>
-                </div>
+                <Button
+                  onClick={handleManageSubscription}
+                  disabled={loadingPortal}
+                  variant="outline"
+                >
+                  {loadingPortal ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <CreditCard className="h-4 w-4 mr-2" />
+                  )}
+                  {language === "ro" ? "Deschide portalul" : "Open portal"}
+                </Button>
               </div>
-              <Button
-                onClick={handleManageSubscription}
-                disabled={loadingPortal}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground"
-              >
-                {loadingPortal ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <CreditCard className="h-4 w-4 mr-2" />
-                )}
-                {language === "ro" ? "Adaugă card" : "Add Card"}
-              </Button>
-            </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center gap-3 py-10 px-6 rounded-xl bg-elevated/40 border border-dashed border-border/60 text-center">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/30 flex items-center justify-center">
+                  <CreditCard className="h-5 w-5 text-primary" />
+                </div>
+                <p className="font-semibold text-foreground">
+                  {language === "ro" ? "Niciun card salvat" : "No card on file"}
+                </p>
+                <p className="text-sm text-muted-foreground max-w-sm">
+                  {language === "ro"
+                    ? "Cardul se adaugă o singură dată, la prima abonare. Cu trial de 14 zile fără card."
+                    : "Your card is added once, at first subscription. The 14-day trial requires no card."}
+                </p>
+                <Button asChild className="mt-2 bg-primary hover:bg-primary/90 text-primary-foreground">
+                  <a href="#plans">
+                    {language === "ro" ? "Vezi planurile" : "See plans"}
+                  </a>
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       </motion.div>
