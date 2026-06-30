@@ -281,7 +281,7 @@ export function WorkExperienceForm({
                         <h4 className="font-medium text-foreground truncate">{entry.position}</h4>
                         <p className="text-sm text-muted-foreground truncate">{entry.company}</p>
                         <p className="text-xs text-muted-foreground mt-1">
-                          {formatDate(entry.startDate)} — {entry.endDate ? formatDate(entry.endDate) : "Present"}
+                          {formatDate(entry.startDate)} - {entry.endDate ? formatDate(entry.endDate) : "Present"}
                         </p>
                       </div>
 

@@ -285,7 +285,7 @@ export function EducationForm({
                         </h4>
                         <p className="text-sm text-muted-foreground truncate">{entry.institution}</p>
                         <p className="text-xs text-muted-foreground mt-1">
-                          {formatDate(entry.startDate)} — {entry.endDate ? formatDate(entry.endDate) : "Present"}
+                          {formatDate(entry.startDate)} - {entry.endDate ? formatDate(entry.endDate) : "Present"}
                           {entry.score && ` • GPA: ${entry.score}`}
                         </p>
                       </div>

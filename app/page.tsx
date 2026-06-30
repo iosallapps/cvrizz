@@ -86,7 +86,7 @@ export default function HomePage() {
       title: language === "ro" ? "Construiește-ți CV-ul" : "Build your CV",
       desc: language === "ro"
         ? "Editor live cu preview în timp real. Reordonezi secțiuni cu drag-and-drop. Auto-save la fiecare tastă, fără să apeși vreodată „Salvează\"."
-        : "Live editor with real-time preview. Reorder sections with drag-and-drop. Auto-saves on every keystroke — you never click \"Save\".",
+        : "Live editor with real-time preview. Reorder sections with drag-and-drop. Auto-saves on every keystroke. You never click \"Save\".",
       meta: language === "ro" ? "Preview live · Auto-save" : "Live preview · Auto-save",
     },
     {
@@ -94,8 +94,8 @@ export default function HomePage() {
       icon: Download,
       title: language === "ro" ? "Aplică" : "Apply",
       desc: language === "ro"
-        ? "Export în PDF de înaltă calitate sau Word, fără watermark. Sau partajează cu un link public custom — recruiterul îl deschide direct în browser."
-        : "Export to high-quality PDF or Word, no watermark. Or share with a custom public link — recruiters open it straight in their browser.",
+        ? "Export în PDF de înaltă calitate sau Word, fără watermark. Sau partajează cu un link public custom. Recruiterul îl deschide direct în browser."
+        : "Export to high-quality PDF or Word, no watermark. Or share with a custom public link. Recruiters open it straight in their browser.",
       meta: language === "ro" ? "PDF · Word · Link public" : "PDF · Word · Public link",
     },
   ];
@@ -444,7 +444,7 @@ export default function HomePage() {
                             <div className="mt-1.5">
                               <div className="flex justify-between items-baseline">
                                 <div className="text-[7px] font-semibold text-gray-900">Lead Designer · Nordic</div>
-                                <div className="text-[5.5px] text-gray-500">2022—Now</div>
+                                <div className="text-[5.5px] text-gray-500">2022-Now</div>
                               </div>
                               <ul className="mt-1 space-y-0.5 text-[6px] leading-snug text-gray-700">
                                 <li className="flex gap-1"><span className="text-primary">•</span>Redesigned onboarding, lifted activation +34%.</li>
@@ -454,7 +454,7 @@ export default function HomePage() {
                             <div className="mt-1.5">
                               <div className="flex justify-between items-baseline">
                                 <div className="text-[7px] font-semibold text-gray-900">Senior Designer · Pixel</div>
-                                <div className="text-[5.5px] text-gray-500">2019—2022</div>
+                                <div className="text-[5.5px] text-gray-500">2019-2022</div>
                               </div>
                               <ul className="mt-1 space-y-0.5 text-[6px] leading-snug text-gray-700">
                                 <li className="flex gap-1"><span className="text-primary">•</span>Owned checkout flow for 2M+ monthly users.</li>
