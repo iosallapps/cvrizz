@@ -23,16 +23,18 @@ export function useResume(id: string) {
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   const pendingSave = useRef<ResumeData | null>(null);
   const retryCount = useRef(0);
+  const hasCreatedRef = useRef(false);
   const isNewResume = id === "new";
 
-  // Handle "new" resume creation
+  // Handle "new" resume creation (guard against double-create in StrictMode)
   useEffect(() => {
-    if (isNewResume) {
+    if (isNewResume && !hasCreatedRef.current) {
+      hasCreatedRef.current = true;
       createResume()
         .then((resume) => {
           router.replace(`/editor/${resume.id}`);
         })
-        .catch((error) => {
+        .catch(() => {
           toast.error("Failed to create resume");
           router.push("/dashboard");
         });
