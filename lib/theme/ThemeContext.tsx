@@ -12,17 +12,19 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("system");
-  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("dark");
+function getInitialTheme(): Theme {
+  if (typeof window === "undefined") return "system";
+  const savedTheme = localStorage.getItem("theme") as Theme | null;
+  return savedTheme && ["light", "dark", "system"].includes(savedTheme)
+    ? savedTheme
+    : "system";
+}
 
-  // Detect system preference
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") as Theme;
-    if (savedTheme && ["light", "dark", "system"].includes(savedTheme)) {
-      setThemeState(savedTheme);
-    }
-  }, []);
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  // Read the persisted theme during initialization (client-only) instead of
+  // setting state inside an effect, which triggers cascading renders.
+  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
+  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("dark");
 
   // Apply theme to document
   useEffect(() => {

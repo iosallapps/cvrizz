@@ -12,7 +12,7 @@ export function PremiumBackground({
   variant = "default",
   showParticles = true
 }: PremiumBackgroundProps) {
-  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; size: number; delay: number }>>([]);
+  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; size: number; delay: number; duration: number }>>([]);
 
   useEffect(() => {
     if (showParticles) {
@@ -22,7 +22,11 @@ export function PremiumBackground({
         y: Math.random() * 100,
         size: Math.random() * 3 + 1,
         delay: Math.random() * 5,
+        duration: 4 + Math.random() * 2,
       }));
+      // Intentional: particles use client-only random values and must be
+      // generated after mount to avoid SSR/client hydration mismatch.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setParticles(newParticles);
     }
   }, [showParticles, variant]);
@@ -103,7 +107,7 @@ export function PremiumBackground({
             opacity: [0.2, 0.6, 0.2],
           }}
           transition={{
-            duration: 4 + Math.random() * 2,
+            duration: particle.duration,
             repeat: Infinity,
             delay: particle.delay,
             ease: "easeInOut",

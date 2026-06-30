@@ -174,6 +174,8 @@ export async function updateResume(id: string, data: ResumeData) {
       work: validated.work as any,
       education: validated.education as any,
       skills: validated.skills as any,
+      languages: validated.languages as any,
+      projects: validated.projects as any,
       updatedAt: new Date(),
     },
     select: { updatedAt: true },

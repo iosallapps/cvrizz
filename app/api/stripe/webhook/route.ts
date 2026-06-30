@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { stripe, constructWebhookEvent } from "@/lib/stripe";
+import { constructWebhookEvent } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
 
@@ -97,7 +97,10 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
   // Check if this is a one-time CV purchase
   if (session.metadata?.type === "cv_purchase" && session.metadata?.resumeId) {
     try {
-      // Use transaction for atomic updates
+      const paymentIntentId = session.payment_intent as string | null;
+
+      // Use transaction for atomic updates. Idempotent so Stripe retries
+      // (or duplicate event deliveries) don't hit the unique constraint.
       await prisma.$transaction([
         prisma.resume.update({
           where: { id: session.metadata.resumeId },
@@ -107,17 +110,19 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
           },
         }),
         // Record the purchase if we have a payment intent
-        ...(session.payment_intent
+        ...(paymentIntentId
           ? [
-              prisma.cvPurchase.create({
-                data: {
+              prisma.cvPurchase.upsert({
+                where: { stripePaymentIntentId: paymentIntentId },
+                create: {
                   resumeId: session.metadata.resumeId,
                   userId: user.id,
-                  stripePaymentIntentId: session.payment_intent as string,
+                  stripePaymentIntentId: paymentIntentId,
                   amount: session.amount_total || 0,
                   currency: session.currency || "ron",
                   status: "completed",
                 },
+                update: { status: "completed" },
               }),
             ]
           : []),
@@ -128,6 +133,14 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
       throw new Error(`Database error processing checkout: ${dbError}`);
     }
   }
+}
+
+// In stripe-node v20+ (API 2026-01-28.clover) `current_period_end` lives on
+// the subscription item, not the subscription itself. Read it safely and
+// return undefined rather than producing an Invalid Date.
+function getCurrentPeriodEnd(subscription: Stripe.Subscription): Date | undefined {
+  const ts = subscription.items?.data?.[0]?.current_period_end;
+  return typeof ts === "number" ? new Date(ts * 1000) : undefined;
 }
 
 // Handle subscription updates
@@ -155,13 +168,15 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
     status = "CANCELLED";
   }
 
+  const currentPeriodEnd = getCurrentPeriodEnd(subscription);
+
   try {
     await prisma.user.update({
       where: { id: user.id },
       data: {
         subscriptionStatus: status,
         stripeSubscriptionId: subscription.id,
-        currentPeriodEnd: new Date((subscription as unknown as { current_period_end: number }).current_period_end * 1000),
+        ...(currentPeriodEnd ? { currentPeriodEnd } : {}),
       },
     });
   } catch (dbError) {
@@ -184,13 +199,15 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
     return;
   }
 
+  const currentPeriodEnd = getCurrentPeriodEnd(subscription);
+
   try {
     await prisma.user.update({
       where: { id: user.id },
       data: {
         subscriptionStatus: "CANCELLED",
         // Keep access until the end of the current period
-        currentPeriodEnd: new Date((subscription as unknown as { current_period_end: number }).current_period_end * 1000),
+        ...(currentPeriodEnd ? { currentPeriodEnd } : {}),
       },
     });
   } catch (dbError) {

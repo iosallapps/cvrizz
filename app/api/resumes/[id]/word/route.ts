@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { checkUserAccess } from "@/lib/subscription";
 import { generateWordDocument, sanitizeFilename } from "@/lib/export/word";
 import type { ResumeData } from "@/types/resume";
 
@@ -34,14 +35,23 @@ export async function GET(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    // Subscription gate: authoritative server-side check (the client handles 402)
+    const access = await checkUserAccess(user.id);
+    if (!access.canExport) {
+      return NextResponse.json(
+        { error: "Upgrade required to export" },
+        { status: 402 }
+      );
+    }
+
     // Convert DB data to ResumeData format
     const resumeData: ResumeData = {
       basics: resume.basics as unknown as ResumeData["basics"],
       work: (resume.work as unknown as ResumeData["work"]) || [],
       education: (resume.education as unknown as ResumeData["education"]) || [],
       skills: (resume.skills as unknown as ResumeData["skills"]) || [],
-      languages: ((resume as any).languages as unknown as ResumeData["languages"]) || [],
-      projects: ((resume as any).projects as unknown as ResumeData["projects"]) || [],
+      languages: (resume.languages as unknown as ResumeData["languages"]) || [],
+      projects: (resume.projects as unknown as ResumeData["projects"]) || [],
     };
 
     // Generate Word document
