@@ -4,6 +4,13 @@ import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { createClient as createSupabaseAdmin } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
+
+const NameSchema = z
+  .string()
+  .trim()
+  .min(1, "Name is required")
+  .max(100, "Name is too long");
 
 export async function updateProfile(name: string) {
   const supabase = await createClient();
@@ -12,9 +19,14 @@ export async function updateProfile(name: string) {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
 
+  const result = NameSchema.safeParse(name);
+  if (!result.success) {
+    throw new Error(result.error.issues[0]?.message ?? "Invalid name");
+  }
+
   await prisma.user.update({
     where: { id: user.id },
-    data: { name: name.trim() },
+    data: { name: result.data },
   });
 
   revalidatePath("/settings");
