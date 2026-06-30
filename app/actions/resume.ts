@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
+import { checkUserAccess } from "@/lib/subscription";
 import { revalidatePath } from "next/cache";
 import {
   ResumeDataSchema,
@@ -306,4 +307,20 @@ export async function getPublicLinkInfo(id: string) {
     publicSlug: resume.publicSlug,
     publicUrl: resume.isPublic && resume.publicSlug ? `/r/${resume.publicSlug}` : null,
   };
+}
+
+/**
+ * Whether the current user is entitled to export.
+ * Used to gate the client-side PDF export (the Word route enforces this server-side).
+ */
+export async function canCurrentUserExport(): Promise<boolean> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) return false;
+
+  const access = await checkUserAccess(user.id);
+  return access.canExport;
 }

@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { useLanguage } from "@/lib/i18n";
+import { canCurrentUserExport } from "@/app/actions/resume";
 
 interface ExportDropdownProps {
   resumeId: string;
@@ -32,6 +33,12 @@ export function ExportDropdown({
     setExporting("pdf");
     try {
       if (onExportPdf) {
+        // Gate client-side PDF export server-side (Word route enforces 402)
+        const allowed = await canCurrentUserExport();
+        if (!allowed) {
+          toast.error(t("upgradeToPro"));
+          return;
+        }
         // Use client-side PDF export
         await onExportPdf();
         toast.success(t("exportSuccess"));
@@ -168,6 +175,12 @@ export function ExportDropdownMobile({
     setExporting("pdf");
     try {
       if (onExportPdf) {
+        // Gate client-side PDF export server-side (Word route enforces 402)
+        const allowed = await canCurrentUserExport();
+        if (!allowed) {
+          toast.error(t("upgradeToPro"));
+          return;
+        }
         await onExportPdf();
         toast.success(t("exportSuccess"));
       } else {
