@@ -106,8 +106,8 @@ export async function getResume(id: string) {
     work: (resume.work as unknown as ResumeData["work"]) || [],
     education: (resume.education as unknown as ResumeData["education"]) || [],
     skills: (resume.skills as unknown as ResumeData["skills"]) || [],
-    languages: ((resume as any).languages as unknown as ResumeData["languages"]) || [],
-    projects: ((resume as any).projects as unknown as ResumeData["projects"]) || [],
+    languages: (resume.languages as unknown as ResumeData["languages"]) || [],
+    projects: (resume.projects as unknown as ResumeData["projects"]) || [],
   };
 
   return {
