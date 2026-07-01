@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { prisma } from "@/lib/prisma";
 import { checkUserAccess } from "@/lib/subscription";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { revalidatePath } from "next/cache";
 import {
   ResumeDataSchema,
@@ -127,6 +128,13 @@ export async function getResume(id: string) {
  */
 export async function createResume(title?: string) {
   const user = await getAuthenticatedUser();
+
+  if (!(await checkRateLimit("createResume", user.id))) {
+    throw new ActionError(
+      "Too many requests. Please slow down and try again.",
+      "VALIDATION"
+    );
+  }
 
   // Check resume limit (prevent abuse)
   const count = await prisma.resume.count({ where: { userId: user.id } });
